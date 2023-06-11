@@ -22,36 +22,68 @@ long int  timesamp()
 void	*routine(void *das)
 {
 	t_p		*ar;
+	// int		flag;
 
 	ar = (t_p *)das;
-	if (ar->id % 2 != 0)
+	ar->flag_l_f = 0;
+	ar->flag_r_f = 0;
+	if (ar->id % 2 == 0)
 		usleep(200);
 	while(1)
 	{
 		pthread_mutex_lock(&ar->arg->print_mutex);
 		printf("%ld %d is thinking\n", timesamp() - ar->arg->time_start,ar->id);
 		pthread_mutex_unlock(&ar->arg->print_mutex);
-		pthread_mutex_lock(&ar->arg->forks[ar->right_fork]);
-		pthread_mutex_lock(&ar->arg->print_mutex);
-		printf("%ld %d has taking a fork\n", timesamp() - ar->arg->time_start, ar->id);
-		pthread_mutex_unlock(&ar->arg->print_mutex);
-		pthread_mutex_lock(&ar->arg->forks[ar->left_fork]);
-		// printf("[%d]\n", ar->right_fork);
-		// printf("{%d}\n", ar->left_fork);
-		pthread_mutex_lock(&ar->arg->print_mutex);
-		printf("%ld %d has taking a fork\n", timesamp()- ar->arg->time_start, ar->id);
-		pthread_mutex_unlock(&ar->arg->print_mutex);
-		pthread_mutex_lock(&ar->arg->print_mutex);
-		ar->eat_time = timesamp() - ar->arg->time_start;
-		printf("%ld %d is eating\n", timesamp()- ar->arg->time_start, ar->id);
-		pthread_mutex_unlock(&ar->arg->print_mutex);
-		usleep__(ar->arg->time_to_eat);
-		pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
-		pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
-		pthread_mutex_lock(&ar->arg->print_mutex);
-		printf("%ld %d is sleeping\n", timesamp()- ar->arg->time_start, ar->id);
-		pthread_mutex_unlock(&ar->arg->print_mutex);
-		usleep__(ar->arg->time_to_sleep);
+		if (ar->flag_r_f == 0)
+		{
+			pthread_mutex_lock(&ar->arg->forks[ar->right_fork]);
+			ar->flag_r_f = 1;
+			pthread_mutex_lock(&ar->arg->print_mutex);
+			printf("%ld %d has taken a fork\n", timesamp() - ar->arg->time_start, ar->id);
+			pthread_mutex_unlock(&ar->arg->print_mutex);
+		}
+		if (ar->flag_r_f == 1 && ar->flag_l_f == 0)
+		{
+			pthread_mutex_lock(&ar->arg->forks[ar->left_fork]);
+			pthread_mutex_lock(&ar->arg->print_mutex);
+			printf("%ld %d has taken a fork\n", timesamp()- ar->arg->time_start, ar->id);
+			pthread_mutex_unlock(&ar->arg->print_mutex);
+			ar->flag_l_f = 1;
+
+		}
+		if (ar->flag_r_f == 1 && ar->flag_l_f == 1)
+		{
+			pthread_mutex_lock(&ar->arg->print_mutex);
+			ar->eat_time = timesamp() - ar->arg->time_start;
+			printf("%ld %d is eating\n", timesamp()- ar->arg->time_start, ar->id);
+			pthread_mutex_unlock(&ar->arg->print_mutex);
+			usleep__(ar->arg->time_to_eat);
+			if (((timesamp() - ar->arg->last_meal) >= ar->arg->time_to_die) && (ar->arg->flag == 0))
+			{
+				if (ar->arg->flag == 0)
+				{
+					pthread_mutex_lock(&ar->arg->print_mutex);
+					printf("%ld %d died\n", timesamp()- ar->arg->time_start, ar->id);
+					pthread_mutex_unlock(&ar->arg->print_mutex);
+
+				}
+				ar->arg->flag = 1;
+				pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
+				pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
+				// return(NULL);
+				exit(0);
+			}
+			ar->arg->last_meal = timesamp();
+			pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
+			pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
+			ar->flag_l_f = 0;
+			ar->flag_r_f = 0;
+			pthread_mutex_lock(&ar->arg->print_mutex);
+			printf("%ld %d is sleeping\n", timesamp()- ar->arg->time_start, ar->id);
+			pthread_mutex_unlock(&ar->arg->print_mutex);
+			usleep__(ar->arg->time_to_sleep);
+
+		}
 		// printf("LOOOL\n");
 	}
 	return (NULL);
@@ -89,8 +121,8 @@ void	init_philo(t_all *st)
 	{
 		ar[i].id = i + 1;
 		ar[i].arg = st;
-		ar[i].right_fork = ar[i].id;
-		ar[i].left_fork = (ar[i].id % ar->arg->n_philo) + 1;
+		ar[i].right_fork = i;
+		ar[i].left_fork = (i % ar->arg->n_philo) + 1;
 		ar[i].eat_time = timesamp();
 		pthread_create(&ar[i].philospher, NULL, &routine, &ar[i]);
 		usleep(10);
@@ -126,9 +158,8 @@ int main(int ac, char **av)
 		st->forks = malloc(sizeof(pthread_mutex_t) * st->n_philo);
 		init_forks(st);
 		st->time_start = timesamp();
+		st->flag = 0;
 		init_philo(st);
-		// join_philo(ar);
-		write(1, "X", 1);
 	}
 	else 
 		return (0);

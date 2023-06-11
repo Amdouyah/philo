@@ -30,6 +30,8 @@ typedef struct	s_all{
 	pthread_mutex_t print_mutex;
 	pthread_mutex_t data_race;
 	long int		time_start;
+	long int		last_meal;
+	int				flag;
 }t_all;
 
 typedef struct s_p{
@@ -41,6 +43,8 @@ typedef struct s_p{
 	int eat_time;
 	int	right_fork;
 	int	left_fork;	
+	int	flag_r_f;
+	int	flag_l_f;
 }t_p
 ;
 
