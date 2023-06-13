@@ -1,16 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   help.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/03 10:16:02 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/03 10:16:54 by amdouyah         ###   ########.fr       */
+/*   Created: 2023/06/12 14:31:49 by amdouyah          #+#    #+#             */
+/*   Updated: 2023/06/13 13:13:11 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void ft_print(char *str, t_p *ar)
+{
+	pthread_mutex_lock(&ar->arg->print_mutex);
+	printf("%ld %d %s\n", timesamp() - ar->arg->time_start, ar->id, str);
+	pthread_mutex_unlock(&ar->arg->print_mutex);
+}
 
 int	ft_atoi(const char *str)
 {

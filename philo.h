@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:29:03 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/08 23:46:56 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/12 14:40:35 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ typedef struct s_p{
 }t_p
 ;
 
-int	ft_atoi(const char *str);
-void	usleep__(long int s);
+int			ft_atoi(const char *str);
+void		usleep__(long int s);
+long int	timesamp();
+void 		ft_print(char *str, t_p *ar);
 
 #endif

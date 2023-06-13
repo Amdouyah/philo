@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:30:00 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/08 23:54:38 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/13 13:11:53 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,56 +31,41 @@ void	*routine(void *das)
 		usleep(200);
 	while(1)
 	{
-		pthread_mutex_lock(&ar->arg->print_mutex);
-		printf("%ld %d is thinking\n", timesamp() - ar->arg->time_start,ar->id);
-		pthread_mutex_unlock(&ar->arg->print_mutex);
+		ft_print("is thinking", ar);
 		if (ar->flag_r_f == 0)
 		{
 			pthread_mutex_lock(&ar->arg->forks[ar->right_fork]);
 			ar->flag_r_f = 1;
-			pthread_mutex_lock(&ar->arg->print_mutex);
-			printf("%ld %d has taken a fork\n", timesamp() - ar->arg->time_start, ar->id);
-			pthread_mutex_unlock(&ar->arg->print_mutex);
+			ft_print("has taken a fork", ar);
 		}
 		if (ar->flag_r_f == 1 && ar->flag_l_f == 0)
 		{
 			pthread_mutex_lock(&ar->arg->forks[ar->left_fork]);
-			pthread_mutex_lock(&ar->arg->print_mutex);
-			printf("%ld %d has taken a fork\n", timesamp()- ar->arg->time_start, ar->id);
-			pthread_mutex_unlock(&ar->arg->print_mutex);
+			ft_print("has taken a fork", ar);
 			ar->flag_l_f = 1;
 
 		}
 		if (ar->flag_r_f == 1 && ar->flag_l_f == 1)
 		{
-			pthread_mutex_lock(&ar->arg->print_mutex);
 			ar->eat_time = timesamp() - ar->arg->time_start;
-			printf("%ld %d is eating\n", timesamp()- ar->arg->time_start, ar->id);
-			pthread_mutex_unlock(&ar->arg->print_mutex);
+			ft_print("is eating", ar);
 			usleep__(ar->arg->time_to_eat);
 			if (((timesamp() - ar->arg->last_meal) >= ar->arg->time_to_die) && (ar->arg->flag == 0))
 			{
 				if (ar->arg->flag == 0)
-				{
-					pthread_mutex_lock(&ar->arg->print_mutex);
-					printf("%ld %d died\n", timesamp()- ar->arg->time_start, ar->id);
-					pthread_mutex_unlock(&ar->arg->print_mutex);
-
-				}
+					ft_print("died", ar);
 				ar->arg->flag = 1;
 				pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
 				pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
-				// return(NULL);
-				exit(0);
+				return(NULL);
+				// exit(0);
 			}
 			ar->arg->last_meal = timesamp();
 			pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
 			pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
 			ar->flag_l_f = 0;
 			ar->flag_r_f = 0;
-			pthread_mutex_lock(&ar->arg->print_mutex);
-			printf("%ld %d is sleeping\n", timesamp()- ar->arg->time_start, ar->id);
-			pthread_mutex_unlock(&ar->arg->print_mutex);
+			ft_print("is sleeping", ar);
 			usleep__(ar->arg->time_to_sleep);
 
 		}

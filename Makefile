@@ -4,7 +4,7 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -pthread
 
-SRC = philo.c ft_atoi.c
+SRC = philo.c help.c
 
 all : $(NAME)
 
