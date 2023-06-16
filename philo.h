@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:29:03 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/12 14:40:35 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/16 16:59:08 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,21 @@ typedef struct	s_all{
 	pthread_mutex_t print_mutex;
 	pthread_mutex_t data_race;
 	long int		time_start;
-	long int		last_meal;
 	int				flag;
+	// pthread_t		check_d;
+	
 }t_all;
 
 typedef struct s_p{
 	
+	long int		last_meal;
 	t_all *arg;
 	pthread_t	philospher;
 	int id;
 	int	think;
 	int eat_time;
 	int	right_fork;
-	int	left_fork;	
+	int	left_fork;
 	int	flag_r_f;
 	int	flag_l_f;
 }t_p

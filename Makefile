@@ -2,18 +2,21 @@ NAME = philo
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror 
+#-pthread -g -fsanitize=thread
+
+OBJ = $(SRC:.c=.o)
 
 SRC = philo.c help.c
 
 all : $(NAME)
 
-$(NAME) : $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o $(NAME)
+$(NAME): $(OBJ) philo.h
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean :
-	rm -rf $(NAME)
+	rm -rf $(OBJ)
 
 fclean : clean
-
+	rm -rf $(NAME)
 re : fclean all
