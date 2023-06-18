@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:29:03 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/16 16:59:08 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 15:32:31 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct	s_all{
 	pthread_mutex_t data_race;
 	long int		time_start;
 	int				flag;
+	int philo_count;
 	// pthread_t		check_d;
 	
 }t_all;
@@ -40,6 +41,7 @@ typedef struct s_p{
 	long int		last_meal;
 	t_all *arg;
 	pthread_t	philospher;
+	int	meals;
 	int id;
 	int	think;
 	int eat_time;
@@ -54,5 +56,6 @@ int			ft_atoi(const char *str);
 void		usleep__(long int s);
 long int	timesamp();
 void 		ft_print(char *str, t_p *ar);
-
+void	mutex_des(t_p *ar, t_all *st);
+void	join_philo(t_p *ar, t_all *st);
 #endif
