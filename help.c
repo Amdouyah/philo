@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 14:31:49 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 15:58:29 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 18:34:20 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ void	ft_print(char *str, t_p *ar)
 	{
 		pthread_mutex_unlock(&(ar->arg->data_race));
 		pthread_mutex_lock(&ar->arg->print_mutex);
-		printf("%ld %d %s\n", timesamp() - ar->arg->time_start, ar->id, str);
-		// printf("%d\n", ar->id);
+		printf("%ld %d %s\n", time_s() - ar->arg->time_start, ar->id, str);
 		pthread_mutex_unlock(&ar->arg->print_mutex);
 	}
 	else
