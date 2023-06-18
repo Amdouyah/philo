@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:30:00 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 22:12:29 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 23:32:21 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,41 @@ void	init_philo(t_all *st, int ac)
 	mutex_des(ar, st);
 }
 
+int	check_d(char **str) 
+{
+	int	i;
+	int j;
+
+	i = 1;
+    while (str[i]) 
+	{
+		j = 0;
+		while (str[i][j])
+		{
+        	if (!(str[i][j] >= '0' && str[i][j] <= '9'))
+            	return (1);
+			j++;
+		}
+		i++;
+    }
+    return (0);
+}
+// int	check_max(char *av)
+// {
+// 	long	nbr;
+	
+// 	nbr = ft_atoi(arg);
+// 	if (nbr > 2147483647 || nbr <= 0)
+// 		return (1);
+// 	return (0);
+// }
+
 int	main(int ac, char **av)
 {
 	t_all	*st;
 	t_p		*ar;
 
-	if (ac == 5 || ac == 6)
+	if (check_d(av) == 0 && (ac == 5 || ac == 6))
 	{
 		ar = NULL;
 		st = malloc(sizeof(t_all));

@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 14:31:49 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 22:11:56 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 23:18:31 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	dead(t_all *st, t_p *ar, int i)
 	return (0);
 }
 
-int	ft_atoi(const char *str)
+long	ft_atoi(const char *str)
 {
 	int	r;
 	int	i;
