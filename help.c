@@ -6,11 +6,20 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 14:31:49 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 18:34:20 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 22:11:56 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	usleep__(long int s)
+{
+	long int	start;
+
+	start = time_s();
+	while (time_s() - start < s)
+		usleep(50);
+}
 
 void	ft_print(char *str, t_p *ar)
 {
@@ -24,6 +33,39 @@ void	ft_print(char *str, t_p *ar)
 	}
 	else
 		pthread_mutex_unlock(&(ar->arg->data_race));
+}
+
+void	init_forks(t_all *st)
+{
+	int	i;
+
+	i = 0;
+	while (i < st->n_philo)
+	{
+		pthread_mutex_init(&st->forks[i], NULL);
+		i++;
+	}
+	pthread_mutex_init(&st->print_mutex, NULL);
+	pthread_mutex_init(&st->data_race, NULL);
+}
+
+int	dead(t_all *st, t_p *ar, int i)
+{
+	pthread_mutex_lock(&(ar[i].arg->data_race));
+	if (time_s() - ar[i].last_meal >= ar->arg->time_to_die
+		&& ar->arg->flag == 0)
+	{
+		pthread_mutex_lock(&(ar[i].arg->print_mutex));
+		printf("%ld %d %s\n", time_s() - ar->arg->time_start,
+			ar->id, "died");
+		pthread_mutex_unlock(&(ar[i].arg->print_mutex));
+		ar->arg->flag = 1;
+		pthread_mutex_unlock(&(ar[i].arg->data_race));
+		join_philo(ar, st);
+		mutex_des(ar, st);
+		return (1);
+	}
+	return (0);
 }
 
 int	ft_atoi(const char *str)

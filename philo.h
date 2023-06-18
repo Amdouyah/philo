@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:29:03 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 18:42:50 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/18 22:11:22 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,7 @@ void		ft_print(char *str, t_p *ar);
 void		mutex_des(t_p *ar, t_all *st);
 void		join_philo(t_p *ar, t_all *st);
 int			check_meals(t_p *ar);
+void		init_forks(t_all *st);
+int			dead(t_all *st, t_p *ar, int i);
 
 #endif
