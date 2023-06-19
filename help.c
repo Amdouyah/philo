@@ -6,17 +6,18 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 14:31:49 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 23:18:31 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/19 16:59:18 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	usleep__(long int s)
+void	usleep__(long int s, t_p *ar)
 {
 	long int	start;
 
 	start = time_s();
+	(void)ar;
 	while (time_s() - start < s)
 		usleep(50);
 }
@@ -26,10 +27,10 @@ void	ft_print(char *str, t_p *ar)
 	pthread_mutex_lock(&(ar->arg->data_race));
 	if (ar->arg->flag == 0)
 	{
-		pthread_mutex_unlock(&(ar->arg->data_race));
 		pthread_mutex_lock(&ar->arg->print_mutex);
 		printf("%ld %d %s\n", time_s() - ar->arg->time_start, ar->id, str);
 		pthread_mutex_unlock(&ar->arg->print_mutex);
+		pthread_mutex_unlock(&(ar->arg->data_race));
 	}
 	else
 		pthread_mutex_unlock(&(ar->arg->data_race));
@@ -58,8 +59,8 @@ int	dead(t_all *st, t_p *ar, int i)
 		pthread_mutex_lock(&(ar[i].arg->print_mutex));
 		printf("%ld %d %s\n", time_s() - ar->arg->time_start,
 			ar->id, "died");
-		pthread_mutex_unlock(&(ar[i].arg->print_mutex));
 		ar->arg->flag = 1;
+		pthread_mutex_unlock(&(ar[i].arg->print_mutex));
 		pthread_mutex_unlock(&(ar[i].arg->data_race));
 		join_philo(ar, st);
 		mutex_des(ar, st);

@@ -6,7 +6,7 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 13:50:05 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 21:43:28 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/19 15:14:11 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,24 @@ void	mutex_des(t_p *ar, t_all *st)
 	free(ar->arg->forks);
 	free(st);
 	free(ar);
+}
+
+int	check_d(char **str)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (str[i])
+	{
+		j = 0;
+		while (str[i][j])
+		{
+			if (!(str[i][j] >= '0' && str[i][j] <= '9'))
+				return (1);
+			j++;
+		}
+		i++;
+	}
+	return (0);
 }

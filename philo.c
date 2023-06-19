@@ -6,16 +6,18 @@
 /*   By: amdouyah <amdouyah@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 18:30:00 by amdouyah          #+#    #+#             */
-/*   Updated: 2023/06/18 23:32:21 by amdouyah         ###   ########.fr       */
+/*   Updated: 2023/06/19 17:21:07 by amdouyah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	routine2(t_p *ar)
+void	routine2(t_p *ar, int first_time)
 {
 	pthread_mutex_unlock(&ar->arg->data_race);
 	ft_print("is thinking", ar);
+	if (ar->id % 2 == 0 && first_time)
+		usleep(2000);
 	pthread_mutex_lock(&ar->arg->forks[ar->right_fork]);
 	ft_print("has taken a fork", ar);
 	pthread_mutex_lock(&ar->arg->forks[ar->left_fork]);
@@ -24,37 +26,38 @@ void	routine2(t_p *ar)
 	ar->last_meal = time_s();
 	pthread_mutex_unlock(&ar->arg->data_race);
 	ft_print("is eating", ar);
-	usleep__(ar->arg->time_to_eat);
+	usleep__(ar->arg->time_to_eat, ar);
 	pthread_mutex_unlock(&ar->arg->forks[ar->right_fork]);
 	pthread_mutex_unlock(&ar->arg->forks[ar->left_fork]);
 	ft_print("is sleeping", ar);
-	usleep__(ar->arg->time_to_sleep);
+	usleep__(ar->arg->time_to_sleep, ar);
 }
 
 void	*routine(void *das)
 {
 	t_p	*ar;
+	int	first_time;
 
 	ar = (t_p *)das;
-	if (ar->id % 2 == 0)
-		usleep(200);
+	first_time = 1;
 	if (ar->arg->n_philo == 1)
 	{
 		ft_print("is thinking", ar);
 		ft_print("has taken a fork", ar);
 		return (NULL);
 	}
-	while (!ar->arg->flag)
+	while (1)
 	{
 		pthread_mutex_lock(&ar->arg->data_race);
-		if (ar->arg->philo_count == 0)
+		if (ar->arg->philo_count == 0 || ar->arg->flag)
 		{
 			pthread_mutex_unlock(&ar->arg->data_race);
 			break ;
 		}
-		routine2(ar);
+		routine2(ar, first_time);
 		if (check_meals(ar))
 			break ;
+		first_time = 0;
 	}
 	return (NULL);
 }
@@ -76,7 +79,6 @@ t_p	*init_philo2(t_all *st)
 		ar[i].last_meal = time_s();
 		ar[i].meals = ar->arg->n_t_eat;
 		pthread_create(&ar[i].philospher, NULL, routine, &ar[i]);
-		usleep(10);
 		i++;
 	}
 	return (ar);
@@ -111,48 +113,19 @@ void	init_philo(t_all *st, int ac)
 	mutex_des(ar, st);
 }
 
-int	check_d(char **str) 
-{
-	int	i;
-	int j;
-
-	i = 1;
-    while (str[i]) 
-	{
-		j = 0;
-		while (str[i][j])
-		{
-        	if (!(str[i][j] >= '0' && str[i][j] <= '9'))
-            	return (1);
-			j++;
-		}
-		i++;
-    }
-    return (0);
-}
-// int	check_max(char *av)
-// {
-// 	long	nbr;
-	
-// 	nbr = ft_atoi(arg);
-// 	if (nbr > 2147483647 || nbr <= 0)
-// 		return (1);
-// 	return (0);
-// }
-
 int	main(int ac, char **av)
 {
 	t_all	*st;
-	t_p		*ar;
 
 	if (check_d(av) == 0 && (ac == 5 || ac == 6))
 	{
-		ar = NULL;
 		st = malloc(sizeof(t_all));
-		st->n_philo = ft_atoi(av[1]);
-		st->time_to_die = ft_atoi(av[2]);
-		st->time_to_eat = ft_atoi(av[3]);
-		st->time_to_sleep = ft_atoi(av[4]);
+		if (init_argument(av, st) == 1)
+		{
+			write (1, "invalide argument\n", 18);
+			free(st);
+			return (0);
+		}
 		if (ac == 6)
 		{
 			st->n_t_eat = ft_atoi(av[5]);
